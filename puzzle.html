@@ -31,7 +31,27 @@
             opacity: 0;
             z-index: -1;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffb8c6;
+            position: relative;
+        }
 
+        .header h2 {
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header h5{
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
         @keyframes float {
             0% {
                 transform: translateY(0) rotate(0deg);
@@ -237,7 +257,11 @@
 <body>
     <!-- Floating Hearts Background -->
     <div class="floating-hearts" id="floatingHearts"></div>
-
+    
+    <div class="header">
+        <h2>My Dearest <span id="welcomeUser"></span></h2>
+        <a href="index.html" style="text-decoration: none;"><h5>Home</h5></a>
+    </div>
     <!-- Game Container -->
     <div class="game-container">
         <h1>Our Love Maze ❤</h1>
