@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Maze ❤</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #fff5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b8b;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Game Container */
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 140, 0.3);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-container h1 {
+            margin-bottom: 15px;
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .game-container p {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Maze Board */
+        .maze-board {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 400px;
+            margin: 0 auto 20px;
+            border: 3px solid #ffb8c6;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .cell {
+            background-color: #ffebee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .cell.wall {
+            background-color: #ff6b8b;
+        }
+
+        .cell.path {
+            background-color: #ffebee;
+        }
+
+        .cell.start {
+            background-color: #a8e6cf;
+        }
+
+        .cell.end {
+            background-color: #dcedc1;
+        }
+
+        .player {
+            width: 70%;
+            height: 70%;
+            background-color: #d23669;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        .end-marker {
+            width: 80%;
+            height: 80%;
+            background-color: #ff8e9e;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Game Info */
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background: #ffebee;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #ffb8c6;
+        }
+
+        .info-box h3 {
+            color: #d23669;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        /* Message Area */
+        .message {
+            margin: 15px 0;
+            font-size: 18px;
+            color: #d23669;
+            font-weight: bold;
+            min-height: 27px;
+        }
+
+        /* Action Button */
+        .action-btn {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #ff6b8b, #ff8e9e);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(to right, #ff5777, #ff7b8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+        }
+
+        /* Floating Hearts */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            width: 150px;
+            height: 150px;
+            margin: 15px auto;
+        }
+
+        .control-btn {
+            background: #ffebee;
+            border: 2px solid #ffb8c6;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .control-btn:active {
+            background: #ffd6de;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .maze-board {
+                height: 300px;
+            }
+            
+            .game-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <h1>Our Love Maze ❤</h1>
+        <p>Guide your heart through the maze to reach your sweetheart!</p>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <h3>Moves</h3>
+                <div id="moveCount">0</div>
+            </div>
+            <div class="info-box">
+                <h3>Time</h3>
+                <div id="timeCount">0:00</div>
+            </div>
+        </div>
+        
+        <div class="message" id="message">
+            Find your way to love!
+        </div>
+        
+        <div class="maze-board" id="mazeBoard">
+            <!-- Maze will be generated by JavaScript -->
+        </div>
+        
+        <div class="controls">
+            <div class="control-btn" onclick="movePlayer(0, -1)">⬆️</div>
+            <div class="control-btn" onclick="movePlayer(-1, 0)">⬅️</div>
+            <div class="control-btn" onclick="movePlayer(0, 1)">⬇️</div>
+            <div class="control-btn" onclick="movePlayer(1, 0)">➡️</div>
+        </div>
+        
+        <button class="action-btn" onclick="startGame()">New Game ❤</button>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Game variables
+        let maze = [];
+        let playerPos = { row: 1, col: 1 };
+        let endPos = { row: 13, col: 13 };
+        let moveCount = 0;
+        let timer = 0;
+        let timerInterval;
+        let isGameActive = false;
+        const romanticMessages = {
+            start: [
+                "Find your way to love!",
+                "Follow your heart to your sweetheart!",
+                "The path to love is waiting!",
+                "Navigate the maze of love!"
+            ],
+            move: [
+                "You're getting closer!",
+                "Follow your heart!",
+                "Love is just around the corner!",
+                "I believe in you, my love!"
+            ],
+            win: [
+                "You found your sweetheart! ❤",
+                "Love conquers all obstacles!",
+                "Your hearts are now connected!",
+                "True love always finds a way!"
+            ]
+        };
+
+        // Maze template (1 = wall, 0 = path)
+        const mazeTemplate = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+            [1,0,1,0,1,0,1,1,1,0,1,0,1,0,1],
+            [1,0,1,0,0,0,0,0,1,0,0,0,1,0,1],
+            [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1],
+            [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,0,1,1,1,1,1,0,1,0,1],
+            [1,0,0,0,1,0,0,0,0,0,1,0,1,0,1],
+            [1,0,1,0,1,1,1,0,1,0,1,0,1,0,1],
+            [1,0,1,0,0,0,1,0,1,0,0,0,1,0,1],
+            [1,0,1,1,1,0,1,0,1,1,1,1,1,0,1],
+            [1,0,0,0,1,0,1,0,0,0,0,0,0,0,1],
+            [1,0,1,0,1,0,1,1,1,0,1,1,1,0,1],
+            [1,0,1,0,0,0,0,0,1,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+
+        // Initialize game
+        function startGame() {
+            // Reset game state
+            clearInterval(timerInterval);
+            moveCount = 0;
+            timer = 0;
+            isGameActive = true;
+            playerPos = { row: 1, col: 1 };
+            endPos = { row: 13, col: 13 };
+            document.getElementById('moveCount').textContent = moveCount;
+            document.getElementById('timeCount').textContent = '0:00';
+            displayRandomMessage('start');
+            
+            // Start timer
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Create maze
+            createMaze();
+        }
+
+        // Create maze
+        function createMaze() {
+            const mazeBoard = document.getElementById('mazeBoard');
+            mazeBoard.innerHTML = '';
+            
+            // Copy maze template
+            maze = JSON.parse(JSON.stringify(mazeTemplate));
+            
+            // Create maze cells
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    if (maze[row][col] === 1) {
+                        cell.classList.add('wall');
+                    } else {
+                        cell.classList.add('path');
+                        
+                        // Add start position
+                        if (row === playerPos.row && col === playerPos.col) {
+                            const player = document.createElement('div');
+                            player.className = 'player';
+                            player.id = 'player';
+                            cell.appendChild(player);
+                        }
+                        
+                        // Add end position
+                        if (row === endPos.row && col === endPos.col) {
+                            const endMarker = document.createElement('div');
+                            endMarker.className = 'end-marker';
+                            endMarker.innerHTML = '❤';
+                            cell.appendChild(endMarker);
+                        }
+                    }
+                    
+                    mazeBoard.appendChild(cell);
+                }
+            }
+        }
+
+        // Move player
+        function movePlayer(rowDiff, colDiff) {
+            if (!isGameActive) return;
+            
+            const newRow = playerPos.row + rowDiff;
+            const newCol = playerPos.col + colDiff;
+            
+            // Check if move is valid
+            if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15 && 
+                maze[newRow][newCol] === 0) {
+                
+                // Update player position
+                playerPos = { row: newRow, col: newCol };
+                
+                // Update move count
+                moveCount++;
+                document.getElementById('moveCount').textContent = moveCount;
+                
+                // Display random message
+                displayRandomMessage('move');
+                
+                // Redraw maze with new player position
+                renderMaze();
+                
+                // Check if player reached the end
+                if (newRow === endPos.row && newCol === endPos.col) {
+                    endGame();
+                }
+            }
+        }
+
+        // Render maze
+        function renderMaze() {
+            const mazeBoard = document.getElementById('mazeBoard');
+            mazeBoard.innerHTML = '';
+            
+            for (let row = 0; row < 15; row++) {
+                for (let col = 0; col < 15; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    if (maze[row][col] === 1) {
+                        cell.classList.add('wall');
+                    } else {
+                        cell.classList.add('path');
+                        
+                        // Add player
+                        if (row === playerPos.row && col === playerPos.col) {
+                            const player = document.createElement('div');
+                            player.className = 'player';
+                            player.id = 'player';
+                            cell.appendChild(player);
+                        }
+                        
+                        // Add end marker
+                        if (row === endPos.row && col === endPos.col) {
+                            const endMarker = document.createElement('div');
+                            endMarker.className = 'end-marker';
+                            endMarker.innerHTML = '❤';
+                            cell.appendChild(endMarker);
+                        }
+                    }
+                    
+                    mazeBoard.appendChild(cell);
+                }
+            }
+        }
+
+        // End game
+        function endGame() {
+            isGameActive = false;
+            clearInterval(timerInterval);
+            displayRandomMessage('win');
+            createHeartsAnimation(15);
+        }
+
+        // Update timer
+        function updateTimer() {
+            timer++;
+            const minutes = Math.floor(timer / 60);
+            const seconds = timer % 60;
+            document.getElementById('timeCount').textContent = 
+                `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        // Display random romantic message
+        function displayRandomMessage(type) {
+            const messages = romanticMessages[type];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = randomMessage;
+        }
+
+        // Create hearts animation
+        function createHeartsAnimation(count) {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 80 + 10 + 'vw';
+                heart.style.bottom = '0';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.animationDelay = '0s';
+                container.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (!isGameActive) return;
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    movePlayer(-1, 0);
+                    break;
+                case 'ArrowDown':
+                    movePlayer(1, 0);
+                    break;
+                case 'ArrowLeft':
+                    movePlayer(0, -1);
+                    break;
+                case 'ArrowRight':
+                    movePlayer(0, 1);
+                    break;
+            }
+        });
+
+        // Initialize the page
+        window.onload = function() {
+            createHearts();
+            startGame();
+        };
+    </script>
+</body>
+</html>

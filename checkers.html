@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Romantic Checkers ❤</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #fff5f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b8b;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffb8c6;
+            position: relative;
+        }
+
+        .header h2 {
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .header h5{
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Game Container */
+        .game-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 140, 0.3);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .game-container h1 {
+            margin-bottom: 20px;
+            color: #d23669;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .game-container p {
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        /* Game Board */
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 500px;
+            height: 500px;
+            margin: 0 auto 30px;
+            border: 3px solid #ffb8c6;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .cell {
+            background-color: #ffebee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cell.dark {
+            background-color: #ffb8c6;
+        }
+
+        .cell.highlight {
+            box-shadow: inset 0 0 15px #d23669;
+        }
+
+        .piece {
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .piece.player {
+            background: linear-gradient(145deg, #ff6b8b, #d23669);
+            color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .piece.king.player:after {
+            content: '♛';
+            position: absolute;
+            font-size: 16px;
+            color: white;
+        }
+
+        .piece.ai {
+            background: linear-gradient(145deg, #8b6bff, #6936d2);
+            color: white;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .piece.king.ai:after {
+            content: '♛';
+            position: absolute;
+            font-size: 16px;
+            color: white;
+        }
+
+        .piece.selected {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #d23669;
+        }
+
+        /* Game Info */
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .player-info {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffb8c6;
+            width: 48%;
+        }
+
+        .player-info h3 {
+            color: #d23669;
+            margin-bottom: 5px;
+        }
+
+        .player-info.active {
+            background: #ffd6de;
+            border-color: #ff6b8b;
+        }
+
+        /* Action Button */
+        .action-btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #ff6b8b, #ff8e9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(to right, #ff5777, #ff7b8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+        }
+
+        /* Message Area */
+        .message {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #d23669;
+            font-weight: bold;
+            min-height: 27px;
+        }
+
+        /* Floating Hearts */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-board {
+                height: 300px;
+            }
+            
+            .piece {
+                font-size: 16px;
+            }
+            
+            .piece.king:after {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        
+        <div class="header">
+            <h2>My Dearest <span id="welcomeUser"></span></h2>
+            <a href="/main" style="text-decoration: none;"><h5>Home</h5></a>
+        </div>
+        <h1>Our Romantic Checkers ❤</h1>
+        <p>Play checkers against your sweetheart's AI and see who wins more hearts!</p>
+        
+        <div class="game-info">
+            <div class="player-info" id="playerInfo">
+                <h3>You</h3>
+                <div>Pieces: <span id="playerPieces">12</span></div>
+            </div>
+            <div class="player-info" id="aiInfo">
+                <h3>Sweetheart AI</h3>
+                <div>Pieces: <span id="aiPieces">12</span></div>
+            </div>
+        </div>
+        
+        <div class="message" id="message">
+            Your turn to make a move, my love!
+        </div>
+        
+        <div class="game-board" id="gameBoard">
+            <!-- Board will be generated by JavaScript -->
+        </div>
+        
+        <button class="action-btn" onclick="resetGame()">Start New Game ❤</button>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Game variables
+        let board = [];
+        let selectedPiece = null;
+        let validMoves = [];
+        let currentPlayer = 'player';
+        let playerPieces = 12;
+        let aiPieces = 12;
+        const romanticMessages = {
+            playerTurn: [
+                "Your turn to make a move, my love!",
+                "Show me your strategy, darling!",
+                "I'm waiting for your move, sweetheart!",
+                "Your move, my beloved!"
+            ],
+            aiTurn: [
+                "Your sweetheart is thinking...",
+                "Let me think about my move, love",
+                "Hmm, what would impress you most?",
+                "Just a moment, my darling..."
+            ],
+            playerWin: [
+                "You've conquered my heart! ❤",
+                "Your brilliance shines through!",
+                "You're the champion of my heart!",
+                "I surrender to your skill, my love!"
+            ],
+            aiWin: [
+                "Your sweetheart wins this time! ❤",
+                "My love for you was my strength!",
+                "Better luck next time, darling!",
+                "Victory for your beloved!"
+            ],
+            playerMove: [
+                "Excellent move, my love!",
+                "How romantic of you!",
+                "You're playing with my heart!",
+                "What a charming move!"
+            ],
+            aiMove: [
+                "I'll respond with love!",
+                "Let me counter that, darling",
+                "A romantic move from me!",
+                "My heart guides this move"
+            ]
+        };
+
+        // Initialize game
+        function initGame() {
+            // Create empty board
+            board = Array(8).fill().map(() => Array(8).fill(null));
+            
+            // Set up player pieces
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if ((row + col) % 2 === 1) {
+                        board[row][col] = { type: 'ai', king: false };
+                    }
+                }
+            }
+            
+            // Set up AI pieces
+            for (let row = 5; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if ((row + col) % 2 === 1) {
+                        board[row][col] = { type: 'player', king: false };
+                    }
+                }
+            }
+            
+            currentPlayer = 'player';
+            playerPieces = 12;
+            aiPieces = 12;
+            selectedPiece = null;
+            validMoves = [];
+            
+            updateUI();
+            displayRandomMessage('playerTurn');
+        }
+
+        // Update UI
+        function updateUI() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            
+            // Update player info
+            document.getElementById('playerPieces').textContent = playerPieces;
+            document.getElementById('aiPieces').textContent = aiPieces;
+            
+            // Highlight active player
+            document.getElementById('playerInfo').classList.toggle('active', currentPlayer === 'player');
+            document.getElementById('aiInfo').classList.toggle('active', currentPlayer === 'ai');
+            
+            // Create board cells
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell ${(row + col) % 2 === 0 ? '' : 'dark'}`;
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // Highlight valid moves
+                    const isHighlighted = validMoves.some(move => 
+                        move.to.row === row && move.to.col === col
+                    );
+                    if (isHighlighted) cell.classList.add('highlight');
+                    
+                    // Add piece if exists
+                    if (board[row][col]) {
+                        const piece = document.createElement('div');
+                        piece.className = `piece ${board[row][col].type} ${board[row][col].king ? 'king' : ''}`;
+                        
+                        // Highlight selected piece
+                        if (selectedPiece && selectedPiece.row === row && selectedPiece.col === col) {
+                            piece.classList.add('selected');
+                        }
+                        
+                        cell.appendChild(piece);
+                    }
+                    
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        // Handle cell click
+        function handleCellClick(row, col) {
+            // AI's turn - ignore player clicks
+            if (currentPlayer === 'ai') return;
+            
+            const piece = board[row][col];
+            
+            // If clicking on a player piece, select it
+            if (piece && piece.type === 'player') {
+                selectedPiece = { row, col };
+                validMoves = getValidMoves(row, col);
+                updateUI();
+                return;
+            }
+            
+            // If a piece is selected and clicking on a valid move
+            if (selectedPiece) {
+                const isValidMove = validMoves.some(move => 
+                    move.to.row === row && move.to.col === col
+                );
+                
+                if (isValidMove) {
+                    makeMove(selectedPiece.row, selectedPiece.col, row, col);
+                }
+            }
+        }
+
+        // Get valid moves for a piece
+        function getValidMoves(row, col) {
+            const piece = board[row][col];
+            if (!piece) return [];
+            
+            const moves = [];
+            const directions = [];
+            
+            // Determine move directions based on piece type
+            if (piece.type === 'player') {
+                directions.push({ row: -1, col: -1 });
+                directions.push({ row: -1, col: 1 });
+                if (piece.king) {
+                    directions.push({ row: 1, col: -1 });
+                    directions.push({ row: 1, col: 1 });
+                }
+            } else { // AI
+                directions.push({ row: 1, col: -1 });
+                directions.push({ row: 1, col: 1 });
+                if (piece.king) {
+                    directions.push({ row: -1, col: -1 });
+                    directions.push({ row: -1, col: 1 });
+                }
+            }
+            
+            // Check each direction for moves
+            for (const dir of directions) {
+                const newRow = row + dir.row;
+                const newCol = col + dir.col;
+                
+                // Check if within bounds
+                if (newRow >= 0 && newRow < 8 && newCol >= 0 && newCol < 8) {
+                    // Empty cell - valid move
+                    if (!board[newRow][newCol]) {
+                        moves.push({
+                            from: { row, col },
+                            to: { row: newRow, col: newCol },
+                            capture: null
+                        });
+                    } 
+                    // Opponent's piece - check if can jump
+                    else if (board[newRow][newCol].type !== piece.type) {
+                        const jumpRow = newRow + dir.row;
+                        const jumpCol = newCol + dir.col;
+                        
+                        if (jumpRow >= 0 && jumpRow < 8 && jumpCol >= 0 && jumpCol < 8 && !board[jumpRow][jumpCol]) {
+                            moves.push({
+                                from: { row, col },
+                                to: { row: jumpRow, col: jumpCol },
+                                capture: { row: newRow, col: newCol }
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Prioritize captures
+            const captures = moves.filter(move => move.capture);
+            return captures.length > 0 ? captures : moves;
+        }
+
+        // Make a move
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            const piece = board[fromRow][fromCol];
+            const move = validMoves.find(m => 
+                m.to.row === toRow && m.to.col === toCol
+            );
+            
+            // Move the piece
+            board[toRow][toCol] = {...piece};
+            board[fromRow][fromCol] = null;
+            
+            // Check for promotion to king
+            if ((piece.type === 'player' && toRow === 0) || 
+                (piece.type === 'ai' && toRow === 7)) {
+                board[toRow][toCol].king = true;
+            }
+            
+            // Handle capture
+            if (move && move.capture) {
+                const { row, col } = move.capture;
+                board[row][col] = null;
+                
+                if (piece.type === 'player') {
+                    aiPieces--;
+                } else {
+                    playerPieces--;
+                }
+            }
+            
+            // Check if additional captures are available
+            const additionalCaptures = getValidMoves(toRow, toCol).filter(m => m.capture);
+            
+            // If it's a capture and additional captures are available, keep turn
+            if (move && move.capture && additionalCaptures.length > 0 && 
+                ((piece.type === 'player' && currentPlayer === 'player') || 
+                 (piece.type === 'ai' && currentPlayer === 'ai'))) {
+                selectedPiece = { row: toRow, col: toCol };
+                validMoves = additionalCaptures;
+            } else {
+                // Switch turns
+                currentPlayer = currentPlayer === 'player' ? 'ai' : 'player';
+                selectedPiece = null;
+                validMoves = [];
+                
+                if (currentPlayer === 'ai') {
+                    displayRandomMessage('aiTurn');
+                    setTimeout(aiMove, 1000);
+                } else {
+                    displayRandomMessage('playerTurn');
+                }
+            }
+            
+            // Check for win conditions
+            if (playerPieces === 0) {
+                displayRandomMessage('aiWin');
+                currentPlayer = null;
+            } else if (aiPieces === 0) {
+                displayRandomMessage('playerWin');
+                currentPlayer = null;
+            }
+            
+            updateUI();
+        }
+
+        // AI move
+        function aiMove() {
+            // Find all AI pieces
+            const aiPieces = [];
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (board[row][col] && board[row][col].type === 'ai') {
+                        aiPieces.push({ row, col });
+                    }
+                }
+            }
+            
+            // Find all possible moves (prioritizing captures)
+            let allMoves = [];
+            for (const piece of aiPieces) {
+                const moves = getValidMoves(piece.row, piece.col);
+                allMoves = allMoves.concat(moves.map(m => ({
+                    from: { row: piece.row, col: piece.col },
+                    to: m.to,
+                    capture: m.capture
+                })));
+            }
+            
+            // If no moves available (shouldn't happen if game isn't over)
+            if (allMoves.length === 0) return;
+            
+            // Prioritize captures
+            const captures = allMoves.filter(m => m.capture);
+            const movesToConsider = captures.length > 0 ? captures : allMoves;
+            
+            // Choose a random move from the best available
+            const randomIndex = Math.floor(Math.random() * movesToConsider.length);
+            const move = movesToConsider[randomIndex];
+            
+            // Make the move
+            displayRandomMessage('aiMove');
+            makeMove(move.from.row, move.from.col, move.to.row, move.to.col);
+        }
+
+        // Display random romantic message
+        function displayRandomMessage(type) {
+            const messages = romanticMessages[type];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = randomMessage;
+            
+            // Create hearts for good messages
+            if (type === 'playerWin' || type === 'aiMove') {
+                createHeartsAnimation(3);
+            }
+        }
+
+        // Create hearts animation
+        function createHeartsAnimation(count) {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < count; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 80 + 10 + 'vw';
+                heart.style.bottom = '0';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.animationDelay = '0s';
+                container.appendChild(heart);
+                
+                // Remove heart after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
+            }
+        }
+
+        // Reset game
+        function resetGame() {
+            initGame();
+        }
+
+        // Initialize the page
+        window.onload = function() {
+            createHearts();
+            initGame();
+        };
+    </script>
+</body>
+</html>

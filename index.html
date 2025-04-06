@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Love Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #fff5f7;
+        }
+
+        /* Heart Animation */
+        .heart {
+            position: fixed;
+            font-size: 20px;
+            color: #ff6b8b;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 140, 0.3);
+            width: 400px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-form h2 {
+            margin-bottom: 25px;
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffb8c6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #d23669;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #ff6b8b, #ff8e9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(to right, #ff5777, #ff7b8b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+        }
+
+        .login-btn:after {
+            content: '❤';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover:after {
+            top: 10px;
+            opacity: 1;
+        }
+
+        .error-message {
+            color: #ff3333;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* Main Content Styles */
+        .main-container {
+            display: none;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffb8c6;
+            position: relative;
+        }
+
+        .header h2 {
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .header h5{
+            color: #d23669;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #ff6b8b, #ff8e9e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 139, 0.4);
+        }
+
+        /* Love Message */
+        .love-message {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 20px;
+            color: #d23669;
+            font-style: italic;
+            position: relative;
+        }
+
+        .love-message:before, .love-message:after {
+            content: '❤';
+            margin: 0 10px;
+            color: #ff6b8b;
+        }
+
+        /* Media Sections */
+        .media-section {
+            margin-bottom: 60px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(255, 105, 140, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .media-section:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #ff6b8b, #ffb8c6);
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #d23669;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: #ffb8c6;
+            margin: 10px auto 0;
+        }
+
+        .media-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .media-item {
+            position: relative;
+            margin: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 5px solid white;
+        }
+
+        .media-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 105, 140, 0.3);
+        }
+
+        .media-item img, .media-item video, .media-item iframe {
+            display: block;
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .media-item video {
+            background: #000;
+        }
+
+        /* YouTube iframe styling */
+        .youtube-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .youtube-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Heart Button */
+        .heart-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #ff6b8b;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 10px;
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.3);
+            color: #d23669;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .media-row {
+                flex-direction: column;
+            }
+            
+            .media-item {
+                margin: 20px 0;
+            }
+        }
+
+        /* Floating Hearts */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-form">
+            <h2>Our Love Story ❤</h2>
+            <div class="input-group">
+                <label for="username">Sweetheart's Name</label>
+                <input type="text" id="username" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label for="password">Secret Code</label>
+                <input type="password" id="password" placeholder="Our special word">
+            </div>
+            <button class="login-btn" onclick="login()">Unlock Our Memories</button>
+            <div class="error-message" id="errorMessage">
+                Oh no! Try again my love ❤
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container" id="mainContent">
+        <div class="header">
+            <h2>My Dearest <span id="welcomeUser"></span></h2>
+            <a href="/game" style="text-decoration: none;"><h5>Rock Paper Scissors</h5></a>
+            <a href="/checkers" style="text-decoration: none;"><h5>Checkers</h5></a>
+            <a href="/puzzle" style="text-decoration: none;"><h5>Puzzle</h5></a>
+            <button class="logout-btn" onclick="logout()">Until Next Time</button>
+        </div>
+
+        <div class="love-message" id="personalMessage">
+            Every moment with you is special
+        </div>
+
+        <div id="mediaContent">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Sweethearts credentials and their content
+        const sweethearts = {
+            "Arofat": {
+                password: "yoqjime",
+                message: "To my love, Arofat - you light up my world every day ❤",
+                videos: [
+                    "https://www.youtube.com/embed/snQ_Cm9dgk4",
+                    "https://www.youtube.com/embed/iBxFxjuh6Yk" // Example video
+                ],
+                images: [
+                    "https://i.ibb.co/B2wKJYBm/rasm1.jpg",
+                    "https://i.ibb.co/QvfP3bhp/rasm2.jpg",
+                    "https://i.ibb.co/4wFNFjSn/rasm3.jpg",
+                    "https://i.ibb.co/SwPPL7d9/rasm4.jpg",
+                    "https://i.ibb.co/kbWZ3Nj/rasm5.jpg"
+                ]
+            },
+            "Ixtiyor": {
+                password: "hajime",
+                message: "My darling Ixtiyor, every day with you is a blessing ❤",
+                videos: [
+                    "https://www.youtube.com/embed/snQ_Cm9dgk4",
+                    "https://www.youtube.com/embed/iBxFxjuh6Yk"
+                ],
+                images: [
+                    "https://i.ibb.co/KjY9VDfn/rasm1.jpg",
+                    "https://i.ibb.co/fYftBZ2j/rasm2.jpg",
+                    "https://i.ibb.co/27yS8vZf/rasm3.jpg",
+                    "https://i.ibb.co/609YytQD/rasm4.jpg",
+                    "https://i.ibb.co/tM0XjyHj/rasm5.jpg"
+                ]
+            }
+        };
+
+        let currentUser = null;
+
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('floatingHearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        // Extract YouTube video ID from URL
+        function getYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // Create YouTube embed URL
+        function createYouTubeEmbedUrl(url) {
+            const videoId = getYouTubeId(url);
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+        }
+
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (sweethearts[username] && sweethearts[username].password === password) {
+                currentUser = username;
+                showMainContent();
+                errorMessage.style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+
+        // Show main content after login
+        function showMainContent() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('welcomeUser').textContent = currentUser;
+            document.getElementById('personalMessage').textContent = sweethearts[currentUser].message;
+
+            const mediaContent = document.getElementById('mediaContent');
+            mediaContent.innerHTML = '';
+
+            // Add Videos Section
+            if (sweethearts[currentUser].videos.length > 0) {
+                const videosSection = document.createElement('div');
+                videosSection.className = 'media-section';
+                
+                const videosTitle = document.createElement('h3');
+                videosTitle.className = 'section-title';
+                videosTitle.textContent = 'Our Special Moments';
+                videosSection.appendChild(videosTitle);
+                
+                const videosRow = document.createElement('div');
+                videosRow.className = 'media-row';
+                
+                sweethearts[currentUser].videos.forEach((videoSrc, index) => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'media-item';
+                    
+                    // Check if it's a YouTube video
+                    if (videoSrc.includes('youtube.com') || videoSrc.includes('youtu.be')) {
+                        const embedUrl = createYouTubeEmbedUrl(videoSrc);
+                        const iframe = document.createElement('iframe');
+                        iframe.src = embedUrl;
+                        iframe.frameBorder = '0';
+                        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                        iframe.allowFullscreen = true;
+                        videoItem.appendChild(iframe);
+                    } else {
+                        // Regular video
+                        const video = document.createElement('video');
+                        video.src = videoSrc;
+                        video.controls = true;
+                        videoItem.appendChild(video);
+                    }
+                    
+                    videosRow.appendChild(videoItem);
+
+                    // Add heart button between items (except after last)
+                    if (index < sweethearts[currentUser].videos.length - 1) {
+                        const heartBtn = document.createElement('button');
+                        heartBtn.className = 'heart-btn';
+                        heartBtn.innerHTML = '❤';
+                        videosRow.appendChild(heartBtn);
+                    }
+                });
+                
+                videosSection.appendChild(videosRow);
+                mediaContent.appendChild(videosSection);
+            }
+
+            // Add Images Section
+            if (sweethearts[currentUser].images.length > 0) {
+                const imagesSection = document.createElement('div');
+                imagesSection.className = 'media-section';
+                
+                const imagesTitle = document.createElement('h3');
+                imagesTitle.className = 'section-title';
+                imagesTitle.textContent = 'Our Beautiful Memories';
+                imagesSection.appendChild(imagesTitle);
+                
+                const imagesRow = document.createElement('div');
+                imagesRow.className = 'media-row';
+                
+                sweethearts[currentUser].images.forEach((imageSrc, index) => {
+                    const imageItem = document.createElement('div');
+                    imageItem.className = 'media-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = imageSrc;
+                    img.alt = `Memory ${index + 1}`;
+                    img.style.width = '300px';
+                    img.style.height = '200px';
+                    
+                    imageItem.appendChild(img);
+                    imagesRow.appendChild(imageItem);
+
+                    // Add heart button between items (except after last)
+                    if (index < sweethearts[currentUser].images.length - 1) {
+                        const heartBtn = document.createElement('button');
+                        heartBtn.className = 'heart-btn';
+                        heartBtn.innerHTML = '❤';
+                        imagesRow.appendChild(heartBtn);
+                    }
+                });
+                
+                imagesSection.appendChild(imagesRow);
+                mediaContent.appendChild(imagesSection);
+            }
+        }
+
+        // Handle Enter key press in password field
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        // Initialize the page
+        window.onload = function() {
+            createHearts();
+        };
+    </script>
+</body>
+</html>
